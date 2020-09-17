@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang='en' dir='ltr'>
+	<head>
+		<meta charset='utf-8'>
+		<title>ColorPicker</title>
+		<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' integrity='sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh' crossorigin='anonymous'>
+
+	</head>
+	<body>
+		<div class='container'>
+			<br><br>
+			<input type='range' min='0' max='255' value='50' class='slider container-fluid' id='r'><br><br>
+			<input type='range' min='0' max='255' value='50' class='slider container-fluid' id='g'><br><br>
+			<input type='range' min='0' max='255' value='50' class='slider container-fluid' id='b'><br><br>
+
+			<div class='container' id='status'></div><br><br>
+
+			<input type='button' class='btn btn-primary container-fluid' id='btn' value='Random Color'>
+		</div>
+	</body>
+	<script type='text/javascript'>
+		var r = document.getElementById('r');
+		var g = document.getElementById('g');
+		var b = document.getElementById('b');
+		var btn = document.getElementById('btn');
+		var color = document.body;
+
+		r.addEventListener('input', changetrigger);
+		g.addEventListener('input', changetrigger);
+		b.addEventListener('input', changetrigger);
+		btn.addEventListener('click', () => {
+			r.value = Math.floor(Math.random() * 255);
+			g.value = Math.floor(Math.random() * 255);
+			b.value = Math.floor(Math.random() * 255);
+			changetrigger();
+		});
+
+		changetrigger();
+
+		function changetrigger(){
+			var data = `rgb(${r.value}, ${g.value}, ${b.value})`;
+			color.style.backgroundColor = data;
+
+			// send to api
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					document.getElementById('status').innerHTML = this.responseText;
+				}
+			};
+			xhttp.open('GET', `led?r=${r.value}&g=${g.value}&b=${b.value}`, true);
+			xhttp.send();
+		}
+
+	</script>
+</html>
